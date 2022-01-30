@@ -16,6 +16,7 @@ defmodule TestEntity do
       entity
       |> validate_presence([:name])
       |> validate_greater_or_equal_than(age: 18)
+      |> validate_unique([:name], TestRepo)
     end
   end
 end

@@ -18,7 +18,7 @@ defmodule TestRepo do
 
   def load(type, uuid) do
     if e = GenServer.call(__MODULE__, {:load, type, uuid}) do
-      {:ok, Entity.init(e, uuid)}
+      {:ok, Entity.force_init(e, uuid)}
     else
       {:error, :not_found}
     end
@@ -27,8 +27,15 @@ defmodule TestRepo do
   def list(type) do
     GenServer.call(__MODULE__, {:list, type})
     |> Enum.map(fn {{_type, uuid}, entity} ->
-      Entity.init(entity, uuid)
+      Entity.force_init(entity, uuid)
     end)
+  end
+
+  def find_by(example, field) do
+    %type{} = example.data
+
+    list(type)
+    |> Enum.find(fn e -> Entity.get(e, field) == Entity.get(example, field) end)
   end
 
   def handle_call({:store, entity}, _, store) do

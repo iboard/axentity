@@ -6,6 +6,16 @@ defmodule EntityTest do
 
   doctest Entity
 
+  setup _ do
+    {:ok, pid} = TestRepo.start_link()
+
+    on_exit(fn ->
+      if Process.alive?(pid), do: Process.exit(pid, :normal)
+    end)
+
+    :ok
+  end
+
   describe "Basics" do
     test ".init creates an UUID(4)" do
       entity1 = Entity.init(:foo)
@@ -38,16 +48,6 @@ defmodule EntityTest do
   end
 
   describe "Persistence" do
-    setup _ do
-      {:ok, pid} = TestRepo.start_link()
-
-      on_exit(fn ->
-        if Process.alive?(pid), do: Process.exit(pid, :normal)
-      end)
-
-      :ok
-    end
-
     test "full integration loop: init, create, load entity, and list repo" do
       repo = TestRepo
 

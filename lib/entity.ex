@@ -40,6 +40,14 @@ defmodule Altex.Entity do
     |> validate()
   end
 
+
+  @doc """
+  As force_init but skipping validation
+  """
+  def force_init(data, uuid \\ nil) do
+    %Entity{uuid: uuid || UUID.uuid4(), data: Persistable.init(data)}
+  end
+
   @spec validate(t) :: t
   @doc ~s"""
   Check entity and set `errors: []` if any.
